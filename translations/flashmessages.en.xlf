@@ -54,6 +54,10 @@
         <source>action.csrf.error</source>
         <target>The action could not be performed: invalid security token.</target>
       </trans-unit>
+      <trans-unit resname="action.active_entries_limit" id="aelimit2">
+        <source>action.active_entries_limit</source>
+        <target>Maximum number of active entries reached. Please stop at least one before starting a new one.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

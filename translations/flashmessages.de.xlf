@@ -54,6 +54,10 @@
         <source>action.csrf.error</source>
         <target>Die Aktion konnte nicht durchgeführt werden: ungültiges Sicherheitstoken.</target>
       </trans-unit>
+      <trans-unit resname="action.active_entries_limit" id="aelimit2">
+        <source>action.active_entries_limit</source>
+        <target>Maximale Anzahl gleichzeitig aktiver Einträge erreicht. Bitte stoppen Sie zuerst mindestens einen Eintrag.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

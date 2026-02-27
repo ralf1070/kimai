@@ -170,6 +170,10 @@
         <source>These characters are not allowed: {{ chars }}</source>
         <target>Die folgenden Zeichen sind nicht erlaubt: {{ chars }}</target>
       </trans-unit>
+      <trans-unit id="aelimit" resname="Maximum number of active entries reached. Please stop at least one before starting a new one.">
+        <source>Maximum number of active entries reached. Please stop at least one before starting a new one.</source>
+        <target>Maximale Anzahl gleichzeitig aktiver Einträge erreicht. Bitte stoppen Sie zuerst mindestens einen Eintrag.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
