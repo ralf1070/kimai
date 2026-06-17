@@ -35,6 +35,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class TimesheetService
@@ -121,6 +122,30 @@ final class TimesheetService
 
         if (null === $timesheet->getEnd() && !$this->auth->isGranted('start', $timesheet)) {
             throw new AccessDeniedException('You are not allowed to start this timesheet record');
+        }
+
+        // When hard_limit > 1, refuse to start a new entry if the limit is reached.
+        // The user must explicitly stop a running entry first.
+        // When hard_limit == 1, the single running entry is auto-stopped below.
+        if ($timesheet->isRunning()) {
+            $hardLimit = $this->configuration->getTimesheetActiveEntriesHardLimit();
+            if ($hardLimit > 1) {
+                $activeEntries = $this->repository->getActiveEntries($timesheet->getUser());
+                if (\count($activeEntries) >= $hardLimit) {
+                    $violations = new ConstraintViolationList([
+                        new ConstraintViolation(
+                            'Maximum number of active entries reached. Please stop at least one before starting a new one.',
+                            'Maximum number of active entries reached. Please stop at least one before starting a new one.',
+                            [],
+                            $timesheet,
+                            '',
+                            null
+                        ),
+                    ]);
+
+                    throw new ValidationFailedException($violations);
+                }
+            }
         }
 
         $this->repository->begin();
