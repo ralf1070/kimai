@@ -173,6 +173,14 @@ abstract class TimesheetAbstractController extends AbstractController
     {
         $entry = $this->service->createNewTimesheet($this->getUser(), $request);
 
+        $hardLimit = $this->configuration->getTimesheetActiveEntriesHardLimit();
+        if ($hardLimit > 1) {
+            $activeEntries = $this->repository->getActiveEntries($this->getUser());
+            if (\count($activeEntries) >= $hardLimit) {
+                $this->flashWarning('action.active_entries_limit');
+            }
+        }
+
         $preForm = $this->createFormForGetRequest(TimesheetPreCreateForm::class, $entry, [
             'include_user' => $this->includeUserInForms('create'),
         ]);
@@ -205,6 +213,14 @@ abstract class TimesheetAbstractController extends AbstractController
     {
         $copyTimesheet = clone $timesheet;
         $copyTimesheet->resetRates();
+
+        $hardLimit = $this->configuration->getTimesheetActiveEntriesHardLimit();
+        if ($hardLimit > 1) {
+            $activeEntries = $this->repository->getActiveEntries($this->getUser());
+            if (\count($activeEntries) >= $hardLimit) {
+                $this->flashWarning('action.active_entries_limit');
+            }
+        }
 
         $event = new TimesheetMetaDefinitionEvent($copyTimesheet);
         $this->dispatcher->dispatch($event);
